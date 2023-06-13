@@ -9,7 +9,11 @@
       name="description"
       content="Web site created using create-react-app"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <meta name="simplewebrtc-sound-message-receive" content="/url-of-mp3-file" />
+    <meta name="simplewebrtc-sound-message-send" content="/url-of-mp3-file" />
+    <meta name="simplewebrtc-sound-peer-enter" content="/url-of-mp3-file" />
+    <meta name="simplewebrtc-sound-peer-exit" content="/url-of-mp3-file" />
+    <meta name="simplewebrtc-sound-test-output" content="/url-of-mp3-file" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -40,4 +44,6 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script src="https://unpkg.com/peerjs@1.3.2/dist/peerjs.min.js"></script>
+
 </html>
