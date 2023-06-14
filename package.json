@@ -6,6 +6,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -16,6 +17,7 @@
     "react-native-camera": "^4.2.1",
     "react-native-gifted-chat": "^2.3.0",
     "react-native-webrtc": "^111.0.1",
+    "react-router-dom": "^6.12.1",
     "react-scripts": "5.0.1",
     "simplewebrtc": "^3.0.2",
     "web-vitals": "^2.1.4"
