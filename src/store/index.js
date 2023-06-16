@@ -7,14 +7,18 @@ export const initialState = {
     isLoggedIn: false,
     username: "",
     password: "",
-    phone: ""
+    phone: "",
+    profilePic: null,
+    callee: ""
 }
 
 export const GlobalStoreActionType = {
     SET_IS_LOGGED_IN: "SET_IS_LOGGED_IN",
     SET_USERNAME: "SET_USERNAME",
     SET_PASSWORD: "SET_PASSWORD",
-    SET_PHONE: "SET_PHONE"
+    SET_PHONE: "SET_PHONE",
+    SET_PROFILE_PIC: "SET_PROFILE_PIC",
+    SET_CALLEE: "SET_CALLEE"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -46,6 +50,18 @@ function GlobalStoreContextProvider(props) {
             return {
                 ...state,
                 phone: action.payload.phone
+            }
+        }
+        case GlobalStoreActionType.SET_PROFILE_PIC: {
+            return {
+                ...state,
+                profilePic: action.payload.profilePic
+            }
+        }
+        case GlobalStoreActionType.SET_CALLEE: {
+            return {
+                ...state,
+                callee: action.payload.callee
             }
         }
         default:
@@ -84,6 +100,20 @@ function GlobalStoreContextProvider(props) {
             payload: {phone}
         });
        
+    }
+
+    store.setProfilePic = (profilePic) => {
+        dispatch({
+            type: GlobalStoreActionType.SET_PROFILE_PIC,
+            payload: {profilePic}
+        });
+    }
+
+    store.setCallee = (callee) => {
+        dispatch({
+            type: GlobalStoreActionType.SET_CALLEE,
+            payload: {callee}
+        });
     }
 
     return (

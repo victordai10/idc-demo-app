@@ -18,7 +18,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import EditIcon from '@mui/icons-material/Edit';
 
-const Dashboard = () => {
+const InCall = () => {
     const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
 
@@ -173,4 +173,4 @@ const Dashboard = () => {
         </Grid>
     );
 }
-export default Dashboard;
+export default InCall;
