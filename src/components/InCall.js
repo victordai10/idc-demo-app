@@ -31,8 +31,7 @@ const InCall = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        store.setCallee(formData.get("callee"));
-        navigate("/PreCall");
+
         //stuff to expect:
         // ... lots of things to trigger: Calling with signaling (peerjs)
         // Sending the profile and brief message and setting up how 
@@ -59,23 +58,10 @@ const InCall = () => {
                 sx={{
                     display: 'flex', 
                     alignItems: 'center', 
-                    cursor: 'pointer',
-                    transition: 'all 0.3s', // Add transition property here
-                    ':hover': {
-                        backgroundColor: 'primary.dark',
-                        transform: 'scale(1.05)',
-                        transition: 'all 0.3s',
-                    },
-                    // ':active': {
-                    //     backgroundColor: 'primary.light',
-                    //     transform: 'scale(0.95)',
-                    //     transition: 'all 0.1s',
-                    //   },
-                    borderRadius: 4.0,
+                    borderRadius: 2.0,
                     m: '10px',
                     position: 'relative'
                 }}
-                onClick={handleProfileClick}
             >
                 <Box
                     sx={{
@@ -87,39 +73,11 @@ const InCall = () => {
                         
                     }}
                 >
-                    <EditIcon
-                        sx={{
-                            position: 'absolute', // Add 'position: absolute'
-                            top: '16px', // Add 'top' property
-                            right: '16px', // Add 'right' property
-                            width: '27px',
-                            height: '27px'
-                        }}
-                    />
                     <Grid>
                         <Typography component="h2" variant="h7">
-                            My Profile
+                            Video Camera with options for microphone, camera (settings for video camera using web rtc)
                         </Typography> 
                         <div>
-                        <Avatar sx={{ m: 1, bgcolor: 'transparent', width: '100px', height: '100px' }}>
-                            <img
-                                src={store.profilePic || defaultProfileImage}
-                                alt="Profile Image"
-                                style={{ width: '100px', height: '100px', objectFit: 'cover', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                            />
-                           
-                        </Avatar>
-                            <Typography component="h3" variant="p1" class="profileFields">
-                                Username: {store.username}
-                            </Typography> 
-
-                            <Typography component="h3" variant="p1" class="profileFields">
-                                Phone: {store.phone}
-                            </Typography>
-
-                            <Typography component="h3" variant="p1" class="profileFields">
-                                Occupation: Real Estate Agent
-                            </Typography>
 
                         </div>
                     </Grid>
@@ -136,7 +94,6 @@ const InCall = () => {
                 }}
             >
                 <Box
-                    component="form" noValidate onSubmit={handleSubmit}
                     sx={{
                         my: 8,
                         mx: 4,
@@ -147,25 +104,17 @@ const InCall = () => {
                     }}
                 >
                     <Typography component="h3" variant="p1">
-                        Who would you like to set up a call with?
+                        Chat (Add attachments) 
                     </Typography>
                     <TextField
-                            margin="normal"
-                            required
+                            margin="normal"S
                             fullWidth
-                            id="callee"
-                            label="Enter Callee's Username/ATTUID"
-                            name="callee"
-                            autoComplete="current-callee"
+                            id="chat"
+                            label="Chat..."
+                            name="chat"
+                            autoComplete="current-chat"
                             autoFocus
                     />   
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2, width: '175px', height: '50px', backgroundColor: 'primary.light', color: 'black' }}
-                    >
-                        Set Up Call
-                    </Button>
                 </Box>
                 
             </Grid>

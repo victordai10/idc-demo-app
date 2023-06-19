@@ -77,8 +77,7 @@ const Profile = () => {
                     <Typography component="h1" variant="h5">
                         My Profile
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                        <Avatar sx={{ m: 1, bgcolor: 'transparent', width: '100px', height: '100px' }}>
+                    <Avatar sx={{ m: 2, bgcolor: 'transparent', width: '100px', height: '100px', display: 'flex', justifyContent: 'center', }}>
                             <input
                                 type="file"
                                 id="profileImageInput"
@@ -97,6 +96,8 @@ const Profile = () => {
                             </div>
                             </label>
                         </Avatar>
+                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        
                         <TextField
                             margin="normal"
                             required
