@@ -1,0 +1,7 @@
+{
+  "name": "idc-demo-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

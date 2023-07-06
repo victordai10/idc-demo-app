@@ -33,10 +33,11 @@ const Dashboard = () => {
         const formData = new FormData(event.currentTarget);
         store.setCallee(formData.get("callee"));
         navigate("/PreCall");
-        //stuff to expect:
-        // ... lots of things to trigger: Calling with signaling (peerjs)
-        // Sending the profile and brief message and setting up how 
-        // that looks to the callee
+    }
+
+    const handleLogout = (event) => {
+        event.preventDefault();
+        navigate("/");
     }
 
     return(
@@ -84,7 +85,6 @@ const Dashboard = () => {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        
                     }}
                 >
                     <EditIcon
@@ -101,7 +101,7 @@ const Dashboard = () => {
                             My Profile
                         </Typography> 
                         <div>
-                        <Avatar sx={{ m: 1, bgcolor: 'transparent', width: '100px', height: '100px' }}>
+                        <Avatar sx={{ m: 1, bgcolor: 'transparent', width: '100px', height: '100px', alignItems: 'center' }}>
                             <img
                                 src={store.profilePic || defaultProfileImage}
                                 alt="Profile Image"
@@ -114,11 +114,15 @@ const Dashboard = () => {
                             </Typography> 
 
                             <Typography component="h3" variant="p1" class="profileFields">
+                                Email: daiv4018@gmail.com
+                            </Typography>
+
+                            <Typography component="h3" variant="p1" class="profileFields">
                                 Phone: {store.phone}
                             </Typography>
 
                             <Typography component="h3" variant="p1" class="profileFields">
-                                Occupation: Real Estate Agent
+                                Occupation: TDP Intern
                             </Typography>
 
                         </div>
@@ -136,7 +140,6 @@ const Dashboard = () => {
                 }}
             >
                 <Box
-                    component="form" noValidate onSubmit={handleSubmit}
                     sx={{
                         my: 8,
                         mx: 4,
@@ -145,26 +148,24 @@ const Dashboard = () => {
                         alignItems: 'center',
                         
                     }}
-                >
-                    <Typography component="h3" variant="p1">
-                        Who would you like to set up a call with?
-                    </Typography>
-                    <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="callee"
-                            label="Enter Callee's Username/ATTUID"
-                            name="callee"
-                            autoComplete="current-callee"
-                            autoFocus
-                    />   
+                > 
+                     
                     <Button
                         type="submit"
                         variant="contained"
-                        sx={{ mt: 3, mb: 2, width: '175px', height: '50px', backgroundColor: 'primary.light', color: 'black' }}
+                        sx={{ mt: 3, mb: 2, width: '175px', height: '50px', backgroundColor: '#00a8e0', color: 'black' }}
+                        onClick={handleSubmit}
+                        component="form" noValidate onSubmit={handleSubmit}
                     >
                         Set Up Call
+                    </Button>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2, width: '175px', height: '50px', backgroundColor: 'black', color: 'red' }}
+                        component="form" noValidate onSubmit={handleLogout}
+                    >
+                        Log Out
                     </Button>
                 </Box>
                 

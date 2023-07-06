@@ -9,7 +9,12 @@ export const initialState = {
     password: "",
     phone: "",
     profilePic: null,
-    callee: ""
+    callee: "",
+    msg: "",
+    peer: "",
+    call: "",
+    peerId: "",
+    remotePeerId: ""
 }
 
 export const GlobalStoreActionType = {
@@ -18,7 +23,8 @@ export const GlobalStoreActionType = {
     SET_PASSWORD: "SET_PASSWORD",
     SET_PHONE: "SET_PHONE",
     SET_PROFILE_PIC: "SET_PROFILE_PIC",
-    SET_CALLEE: "SET_CALLEE"
+    SET_CALLEE: "SET_CALLEE",
+    SET_MSG: "SET_MSG"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -62,6 +68,12 @@ function GlobalStoreContextProvider(props) {
             return {
                 ...state,
                 callee: action.payload.callee
+            }
+        }
+        case GlobalStoreActionType.SET_MSG: {
+            return {
+                ...state,
+                msg: action.payload.msg
             }
         }
         default:
@@ -116,6 +128,12 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    store.setMsg = (msg) => {
+        dispatch({
+            type: GlobalStoreActionType.SET_MSG,
+            payload: {msg}
+        });
+    }
     return (
         <GlobalStoreContext.Provider value={ { store } }>
               {props.children}

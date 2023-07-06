@@ -2,6 +2,8 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlobalStoreContext } from '../store'
 
+import { Peer } from "peerjs";
+
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -38,8 +40,17 @@ const PreCall = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
+        const callee = formData.get("callee");
+        const msg = formData.get("callMsg");
+        store.setCallee(callee);
+        store.setMsg(msg);
         // set up brief message value
         // triggers call using peerjs and web rtc!
+        const peer = new Peer("pick-an-id");
+        const conn = peer.connect("another-peers-id");
+        conn.on("open", () => {
+            conn.send("hi!");
+        });
         navigate("/InCall");
     }
     
@@ -74,9 +85,26 @@ const PreCall = () => {
                         onClick={handleBackArrow}
                     />
                     <Typography component="h1" variant="h5">
-                        Setting Up Call with {store.callee}
+                        Pre-Call
                     </Typography>
+                    
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                        <Typography component="h4" variant="p1" sx={{alignItems: 'center'}}>
+                            Who would you like to set up a call with?
+                        </Typography>
+                        <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="callee"
+                                label="Enter Callee's Username/ATTUID"
+                                name="callee"
+                                autoComplete="current-callee"
+                                autoFocus
+                        />   
+                        <Typography component="h4" variant="p1">
+                            What is the purpose of your call?
+                        </Typography>
                         <TextField
                             margin="normal"
                             // required
