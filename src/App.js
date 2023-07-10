@@ -1,6 +1,7 @@
 import './App.css';
+import Peer from 'peerjs';
 
-import React from 'react';
+import React , { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginScreen from "./components/LoginScreen";
 import Dashboard from './components/Dashboard';
@@ -12,17 +13,18 @@ import { GlobalStoreContextProvider } from './store'
 import { Global } from '@emotion/react';
 
 function App() {
+  // const { PeerServer } = require("peer");
+  // const peerServer = PeerServer({port: 9000, path: "/myapp" });
   
-
   return (
     <div class='page'>
         <GlobalStoreContextProvider>
           <Router>
             <Routes>
-              <Route path="/" element={<LoginScreen/>}/>
+              {/* <Route path="/" element={<LoginScreen/>}/>
               <Route path="/Dashboard" element={<Dashboard/>}/>
-              <Route path="/Dashboard/Profile" element={<Profile/>}/>
-              <Route path="/PreCall" element={<PreCall/>}/>
+              <Route path="/Dashboard/Profile" element={<Profile/>}/> */}
+              <Route path="/" element={<PreCall/>}/>
               <Route path="/InCall" element={<InCall/>}/>
             </Routes>
           </Router>

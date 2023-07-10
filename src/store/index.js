@@ -1,5 +1,8 @@
 //store reducer (redux)
 import { Global } from '@emotion/react';
+import { StarRateTwoTone, Store } from '@mui/icons-material';
+import { Peer } from "peerjs";
+
 import { React, createContext, useReducer, useContext, useState } from 'react'
 export const GlobalStoreContext = createContext({});
 
@@ -13,7 +16,7 @@ export const initialState = {
     msg: "",
     peer: "",
     call: "",
-    peerId: "",
+    peerId: "", // should we make peerId simply be your username? 
     remotePeerId: ""
 }
 
@@ -24,7 +27,10 @@ export const GlobalStoreActionType = {
     SET_PHONE: "SET_PHONE",
     SET_PROFILE_PIC: "SET_PROFILE_PIC",
     SET_CALLEE: "SET_CALLEE",
-    SET_MSG: "SET_MSG"
+    SET_MSG: "SET_MSG",
+    SET_CALL: "SET_CALL",
+    SET_PEER_ID: "SET_PEER_ID",
+    SET_REMOTE_PEER_ID: "SET_REMOTE_PEER_ID"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -74,6 +80,18 @@ function GlobalStoreContextProvider(props) {
             return {
                 ...state,
                 msg: action.payload.msg
+            }
+        }
+        case GlobalStoreActionType.SET_PEER_ID: {
+            return {
+                ...state,
+                peerId: action.payload.peerId
+            }
+        }
+        case GlobalStoreActionType.SET_REMOTE_PEER_ID: {
+            return {
+                ...state,
+                remotePeerId: action.payload.remotePeerId
             }
         }
         default:
@@ -134,6 +152,36 @@ function GlobalStoreContextProvider(props) {
             payload: {msg}
         });
     }
+
+    store.setPeerId = (peerId) => {
+        dispatch({
+            type: GlobalStoreActionType.SET_PEER_ID,
+            payload: {peerId}
+        });
+    }
+
+    store.setRemotePeerId = (remotePeerId) => {
+        dispatch({
+            type: GlobalStoreActionType.SET_REMOTE_PEER_ID,
+            payload: {remotePeerId}
+        });
+    }
+
+    // store.call = (remotePeerId) => {
+    //     var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    //     //
+    //     getUserMedia({video: true, audio: true}, (mediaStream) => {
+    //     //initiating call to remote peer
+    //     const call = peer.call(remotePeerId, mediaStream);
+    //     // when call is answered, get remote peer's video
+    //     call.on('stream', (remoteStream) => {
+    //         remoteVideoRef.current.srcObject = remoteStream;
+    //     });
+    //     }, (err) => {
+    //     console.log('Failed to get remote stream' ,err);
+    //     });
+    // }
+
     return (
         <GlobalStoreContext.Provider value={ { store } }>
               {props.children}

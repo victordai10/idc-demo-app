@@ -1,8 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
+import Peer from "peerjs";
 import { useNavigate } from 'react-router-dom';
 import { GlobalStoreContext } from '../store'
-
-import { Peer } from "peerjs";
 
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -21,7 +20,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const PreCall = () => {
     const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
-
+    const localVideoRef = useRef();
+    const remoteVideoRef = useRef();
+    const peerRef = useRef();
 
     const handleBackArrow = (event) => {
         event.preventDefault();
@@ -44,13 +45,8 @@ const PreCall = () => {
         const msg = formData.get("callMsg");
         store.setCallee(callee);
         store.setMsg(msg);
-        // set up brief message value
         // triggers call using peerjs and web rtc!
-        const peer = new Peer("pick-an-id");
-        const conn = peer.connect("another-peers-id");
-        conn.on("open", () => {
-            conn.send("hi!");
-        });
+        store.setRemotePeerId(callee);
         navigate("/InCall");
     }
     
