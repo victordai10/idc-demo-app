@@ -164,6 +164,7 @@ const Dashboard = () => {
                         type="submit"
                         variant="contained"
                         sx={{ mt: 3, mb: 2, width: '175px', height: '50px', backgroundColor: 'black', color: 'red' }}
+                        onClick={handleLogout}
                         component="form" noValidate onSubmit={handleLogout}
                     >
                         Log Out

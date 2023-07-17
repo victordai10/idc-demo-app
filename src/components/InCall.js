@@ -3,12 +3,14 @@ import '../App.css';
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlobalStoreContext } from '../store';
+import PeerjsCall from './PeerCall';
+
 import Peer from 'peerjs';
 
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
+// import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
@@ -18,93 +20,18 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import EditIcon from '@mui/icons-material/Edit';
 
+
 const InCall = () => {
     const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
-    const [peerId, setPeerId] = useState('');
-    const [remotePeerId, setRemotePeerId] = useState('');
-    const currentUserVideoRef = useRef(null);
-    const remoteVideoRef = useRef(null); 
-    const peerInstance = useRef(null);
-
-    useEffect(() => {
-        const peer = new Peer();
-
-        peer.on('open', (id) => {
-            setPeerId(id);
-        });
-
-        // remote peer receives call here
-        peer.on('call', (call) => {
-            var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
-            getUserMedia({video: true, audio: true}, (mediaStream) => {
-                call.answer(mediaStream); //answer call with A/V Stream
-                call.on('stream', function(remoteStream) {
-                    // Show stream in some video/canvas element.
-                });
-            }, (err) => {
-            console.log('Failed to get local stream' ,err);
-            });
-        //     navigator.mediaDevices
-        //     .getUserMedia({ video: true, audio: true })
-        //     .then((stream) => {
-        //         call.answer(stream);
-        
-        //     })
-        //     .catch((err) => {
-        //     console.error(`you got an error: ${err}`);
-        // });
-        })
-        peerInstance.current = peer;
-    }, []);
-
-    // us calling the remote peer
-    const call = (remotePeerId) => {
-        console.log("HI");
-        console.log(remotePeerId);
-        var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
-        getUserMedia({video: true, audio: true}, (mediaStream) => {
-        //initiating call to remote peer
-            // show your own screen
-            currentUserVideoRef.current.srcObject = mediaStream;
-            currentUserVideoRef.current.play(); 
-            
-            var call = peerInstance.current.call(remotePeerId, mediaStream);
-            // when call is answered, get remote peer's video
-
-            call.on('stream', (remoteStream) => {
-                remoteVideoRef.current.srcObject = remoteStream;
-                remoteVideoRef.current.play();
-                console.log(remoteVideoRef.current);
-            });
-            }, (err) => {
-            console.log('Failed to get remote stream' ,err);
-            });
-            // navigator.mediaDevices
-            //     .getUserMedia({ video: true, audio: true })
-            //     .then((stream) => {
-            //         var call = peerInstance.current.call(remotePeerId, stream);
-            //         // when call is answered, get remote peer's video
-            //         call.on('stream', (remoteStream) => {
-            //             remoteVideoRef.current.srcObject = remoteStream;
-            //             remoteVideoRef.current.autoPlay();
-            //         });
-                    
-                    
-            //     })
-            //     .catch((err) => {
-            //     console.error(`you got an error: ${err}`);
-            // });
-    }
-
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         // store.setRemotePeerId(formData.get("remotePeerId"));
-        call(formData.get("remotePeerId"));
+        // setRemotePeerId(formData.get("remotePeerId"));
+        // console.log("Remote Peer Id: ",  remotePeerId);
+        // call(remotePeerId);
         //stuff to expect:
         // ... lots of things to trigger: Calling with signaling (peerjs)
         // Sending the profile and brief message and setting up how 
@@ -112,8 +39,9 @@ const InCall = () => {
     }
 
     return(
+       
         <div>
-        {/* <Grid 
+        <Grid 
             container 
             component="main" 
             sx={{ 
@@ -144,57 +72,11 @@ const InCall = () => {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        
                     }}
                 >
                     <Grid>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-
-                        <Typography component="h2" variant="h7">
-                            Video Camera with options for microphone, camera (settings for video camera using web rtc)
-                            Peer Id: {peerId}
-                            Remote PeerId: {remotePeerId}
-                        </Typography> 
-                        <TextField
-                            margin="normal"
-                            fullWidth
-                            id="remotePeerId"
-                            label="Enter Remote Peer Id"
-                            name="remotePeerId"
-                            autoComplete="remotePeerId"
-                            autoFocus
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                            
-                        >
-                            Connect
-                        </Button> */}
-                         <Typography component="h2" variant="h7">
-                            Video Camera with options for microphone, camera (settings for video camera using web rtc)
-                        </Typography> 
-                        <Typography component="h2" variant="h7">
-                            Peer Id: {peerId}
-                        </Typography> 
-                        <Typography component="h2" variant="h7">
-                            Remote PeerId: {remotePeerId}
-                        </Typography> 
-                        <input type="text" value={remotePeerId} onChange={e => setRemotePeerId(e.target.value)}/>
-                        <button onClick={() => call(remotePeerId)}>Call</button>
-                        <div>
-                        <video ref={remoteVideoRef} />
-                        </div>
-                        <div>
-                        <video ref={currentUserVideoRef}/>
-                        </div>
-
-                    {/* </Box>
-                    <div>
-                        <video ref={remoteVideoRef} autoPlay/>
-                    </div>
+                    {/* PeerjsCall */}
+                    <PeerjsCall />
                     </Grid>
                 </Box>
             </Grid>
@@ -218,6 +100,7 @@ const InCall = () => {
                         
                     }}
                 >
+                    <Grid>
                     <Typography component="h3" variant="p1">
                         Chat (Add attachments) 
                     </Typography>
@@ -230,11 +113,12 @@ const InCall = () => {
                             autoComplete="current-chat"
                             autoFocus
                     />   
+                    </Grid>
                 </Box>
                
             </Grid>
             
-        </Grid> */}
+        </Grid>
         </div>
     );
 }

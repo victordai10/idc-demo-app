@@ -14,9 +14,9 @@ export const initialState = {
     profilePic: null,
     callee: "",
     msg: "",
-    peer: "",
+    peer: null,
     call: "",
-    peerId: "", // should we make peerId simply be your username? 
+    peerId: "", 
     remotePeerId: ""
 }
 
@@ -29,6 +29,7 @@ export const GlobalStoreActionType = {
     SET_CALLEE: "SET_CALLEE",
     SET_MSG: "SET_MSG",
     SET_CALL: "SET_CALL",
+    CREATE_PEER: "CREATE_PEER",
     SET_PEER_ID: "SET_PEER_ID",
     SET_REMOTE_PEER_ID: "SET_REMOTE_PEER_ID"
 }
@@ -80,6 +81,12 @@ function GlobalStoreContextProvider(props) {
             return {
                 ...state,
                 msg: action.payload.msg
+            }
+        }
+        case GlobalStoreActionType.CREATE_PEER: {
+            return {
+                ...state,
+                peer: action.payload.peer
             }
         }
         case GlobalStoreActionType.SET_PEER_ID: {
@@ -150,6 +157,14 @@ function GlobalStoreContextProvider(props) {
         dispatch({
             type: GlobalStoreActionType.SET_MSG,
             payload: {msg}
+        });
+    }
+
+    store.createPeer = () => {
+        const newPeer = new Peer(store.username);
+        dispatch({
+            type: GlobalStoreActionType.CREATE_PEER,
+            payload: {newPeer}
         });
     }
 

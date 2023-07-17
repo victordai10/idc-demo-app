@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import Peer from "peerjs";
+// import Peer from "peerjs";
 import { useNavigate } from 'react-router-dom';
 import { GlobalStoreContext } from '../store'
 
@@ -20,9 +20,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const PreCall = () => {
     const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
-    const localVideoRef = useRef();
-    const remoteVideoRef = useRef();
-    const peerRef = useRef();
+
 
     const handleBackArrow = (event) => {
         event.preventDefault();
