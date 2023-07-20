@@ -8,6 +8,7 @@ export const GlobalStoreContext = createContext({});
 
 export const initialState = {
     isLoggedIn: false,
+    incomingCall: false,
     username: "",
     password: "",
     phone: "",
@@ -22,6 +23,7 @@ export const initialState = {
 
 export const GlobalStoreActionType = {
     SET_IS_LOGGED_IN: "SET_IS_LOGGED_IN",
+    SET_INCOMING_CALL: "SET_INCOMING_CALL",
     SET_USERNAME: "SET_USERNAME",
     SET_PASSWORD: "SET_PASSWORD",
     SET_PHONE: "SET_PHONE",
@@ -42,10 +44,16 @@ function GlobalStoreContextProvider(props) {
       switch (action.type) {
         // LIST UPDATE OF ITS NAME
         case GlobalStoreActionType.SET_IS_LOGGED_IN: {
-          return {
-              ...state,
-              isLoggedIn: action.payload.isLoggedIn
-          };
+            return {
+                ...state,
+                isLoggedIn: action.payload.isLoggedIn
+            };
+        }
+        case GlobalStoreActionType.SET_INCOMING_CALL: {
+            return {
+                ...state,
+                incomingCall: action.payload.incomingCall
+            }
         }
         case GlobalStoreActionType.SET_USERNAME: {
             return {
@@ -114,6 +122,14 @@ function GlobalStoreContextProvider(props) {
         dispatch({
             type: GlobalStoreActionType.SET_IS_LOGGED_IN,
             payload: {isLoggedIn}
+        });
+    }
+
+    store.setIncomingCall = () => {
+        const opposite = !store.incomingCall;
+        dispatch({
+            type: GlobalStoreActionType.SET_INCOMING_CALL,
+            payload: {opposite}
         });
     }
 

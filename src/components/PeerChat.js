@@ -17,33 +17,55 @@ import EditIcon from '@mui/icons-material/Edit';
 
 const PeerChat = () => {
     const { store } = useContext(GlobalStoreContext);
+    const peerInstance = useRef(null);
 
+    const [peer, setPeer] = useState(null);
     const [peerId, setPeerId] = useState(store.username);
     const [remotePeerId, setRemotePeerId] = useState('');
-    
+
     const [connection, setConnection] = useState(null);
-    const [messages, setMessages] = useState('');
+    const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
 
     useEffect(() => {
-        const peer = new Peer(store.username);
+        const initializePeer = async () => {
+            const peerInstance = new Peer(store.username);
 
-        peer.on('open', (id) => {
-            setPeerId(id);
-        });
-
-
-        peer.on('connection', (conn) => {
-            // Handle incoming connections
-            setConnection(conn);
-            // remote peer receives new messages
-            conn.on('data', (data) => {
-                setMessages((prevMessages) => [...prevMessages, { from: 'remote', text: data }]);
+            peerInstance.on('open', () => {
+                console.log('Connected with ID: ', peerInstance.id);
+                setPeerId(peerInstance.id);
             });
-        });
 
-        // establish peerInstance for use outside of useEffect
-        peerInstance.current = peer;
+            peerInstance.on('connection', (conn) => {
+                // Handle incoming connections
+                conn.on('data', (data) => {
+                    setMessages((prevMessages) => [...prevMessages, {from: 'remote', text: data}]);
+                });
+            });
+
+            setPeer(peerInstance);
+        };
+
+        initializePeer();
+
+        // const peer = new Peer(store.username);
+
+        // peer.on('open', (id) => {
+        //     setPeerId(id);
+        // });
+
+
+        // peer.on('connection', (conn) => {
+        //     // Handle incoming connections
+        //     setConnection(conn);
+        //     // remote peer receives new messages
+        //     conn.on('data', (data) => {
+        //         setMessages((prevMessages) => [...prevMessages, { from: 'remote', text: data }]);
+        //     });
+        // });
+
+        // // establish peerInstance for use outside of useEffect
+        // peerInstance.current = peer;
 
         // prevent mem leaks when unmounting
         return () => {
@@ -55,23 +77,22 @@ const PeerChat = () => {
 
 
     const handleConnect = (event) => {
-        
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        const remoteId = formData.get("remotePeerId");
-
-        console.log("remoteID: " + remoteId);
-        console.log(formData.get("remotePeerId"));
-
+        const remoteId = formData.get("remotePeerChatId");
         setRemotePeerId(remoteId);
-        store.setRemotePeerId(remoteId);
+        // store.setRemotePeerId(remoteId);
         
-        //doesn't actually get remotePeerId (or not quick enough due to not being in useEffect)
 
-        console.log("Remote Peer Id: ",  remotePeerId);
-        if(peerInstance) {
-            const conn = peerInstance.connect(remotePeerId);
+        if(peer) {
+            const conn = peer.connect(remoteId);
             setConnection(conn);
+
+            conn.on('open', () => {
+                console.log('Connected to remote peer ID: ', remoteId);
+                setConnection(conn);
+            });
+
             conn.on('data', (data) => {
                 setMessages((prevMessages) => [...prevMessages, { from: 'remote', text: data }]);
             });
@@ -89,7 +110,62 @@ const PeerChat = () => {
         }
     };
 
-
+    return (
+        <Box
+            component="form" noValidate onSubmit={handleConnect}
+            sx={{
+                my: 8,
+                mx: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',        
+            }}
+        >
+                   
+            <Typography component="h3" variant="p1">
+                Chat (Add attachments) 
+            </Typography>
+            <Typography component="h2" variant="h7">
+                Peer Id: {peerId}
+            </Typography> 
+            <Typography component="h2" variant="h7">
+                Remote PeerId: {remotePeerId}
+            </Typography> 
+            <TextField
+                margin="normal"
+                fullWidth
+                id="remotePeerChatId"
+                label="Enter Remote Peer Id"
+                name="remotePeerChatId"
+                autoComplete="remotePeerChatId"
+                autoFocus
+            />
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+            >
+                Connect
+            </Button>
+             <div>
+                <ul sx={{backgroundColor: 'gray', listStyleType: 'none'}}>
+                    {messages.map((message, index) => {
+                        if(message.from === "local") {
+                            
+                        } 
+                        return (<li key={index}>{message.from}: {message.text}</li>);
+                    })}
+                </ul>
+            </div>
+            <input
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                placeholder="Type a message"
+            />
+            <button onClick={handleSendMessage}>Send</button>
+        </Box>
+    );
 
 }
 

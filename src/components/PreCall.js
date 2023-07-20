@@ -43,6 +43,9 @@ const PreCall = () => {
         const msg = formData.get("callMsg");
         store.setCallee(callee);
         store.setMsg(msg);
+        console.log("PreCall-> callee = ", callee);
+        console.log("PreCall-> msg = ", msg);
+
         // triggers call using peerjs and web rtc!
         store.setRemotePeerId(callee);
         navigate("/InCall");

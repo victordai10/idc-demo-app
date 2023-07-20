@@ -22,16 +22,15 @@ const PeerCall = () => {
     const { store } = useContext(GlobalStoreContext);
 
     const [peerId, setPeerId] = useState(store.username);
-    const [remotePeerId, setRemotePeerId] = useState('');
+    const [remotePeerId, setRemotePeerId] = useState(store.remotePeerId);
     const currentUserVideoRef = useRef(null);
     const remoteVideoRef = useRef(null); 
     const peerInstance = useRef(null);
 
-    const [connection, setConnection] = useState(null);
-    const [messages, setMessages] = useState('');
-    const [inputMessage, setInputMessage] = useState('');
+    const [isCameraOn, setIsCameraOn] = useState(true);
+    // const peer = store.peer;
 
-    
+    const defaultProfileImage = "https://th.bing.com/th/id/R.67827ff3dd64bbbcb160eefa6ab150a9?rik=j%2flB8VmEWIs9Bg&riu=http%3a%2f%2f3.bp.blogspot.com%2f-qDc5kIFIhb8%2fUoJEpGN9DmI%2fAAAAAAABl1s%2fBfP6FcBY1R8%2fs320%2fBlueHead.jpg&ehk=dMHPxs9WRYvMgQqfGxuhupwv%2fwiQMvsXHHD9ReK4kNs%3d&risl=&pid=ImgRaw&r=0";
 
     useEffect(() => {
         const peer = new Peer(store.username);
@@ -47,11 +46,13 @@ const PeerCall = () => {
             console.log("Remote Peer has received the call");
             // error comes here!!!
 
-            navigator.mediaDevices.getUserMedia({video: false, audio: true})
+            navigator.mediaDevices.getUserMedia({video: true, audio: true})
             .then((mediaStream) => {
                 currentUserVideoRef.current.srcObject = mediaStream;
                 currentUserVideoRef.current.play();
-                
+
+                console.log("Remote Peer ACTUALLY RECEIVED CALL!");
+
                 call.answer(mediaStream); //answer call with A/V Stream
                 call.on('stream', function(remoteStream) {
                     remoteVideoRef.current.srcObject = remoteStream;
@@ -63,17 +64,12 @@ const PeerCall = () => {
             });
         })
         
-        peer.on('connection', (conn) => {
-            // Handle incoming connections
-            setConnection(conn);
-            // remote peer receives new messages
-            conn.on('data', (data) => {
-                setMessages((prevMessages) => [...prevMessages, { from: 'remote', text: data }]);
-            });
-        });
-
+       
         // establish peerInstance for use outside of useEffect
         peerInstance.current = peer;
+
+        // call(store.remotePeerId);
+
 
         // prevent mem leaks when unmounting
         return () => {
@@ -129,43 +125,68 @@ const PeerCall = () => {
 
         console.log("Remote Peer Id: ",  remotePeerId);
         if(peerInstance) {
-            // const conn = peerInstance.connect(remotePeerId);
-            // setConnection(conn);
-            // conn.on('data', (data) => {
-            //     setMessages((prevMessages) => [...prevMessages, { from: 'remote', text: data }]);
-            // });
-
+            
             // Video Call 
             call(remoteId);
         }
           
     }
 
-    const handleSendMessage = () => {
-        if(connection) {
-          connection.send(inputMessage);
-          setMessages((prevMessages) => [...prevMessages, { from: 'local', text: inputMessage }]);
-          setInputMessage('');
+
+    function toggleCamera() {
+        if(currentUserVideoRef.current && currentUserVideoRef.current.srcObject) {
+            const stream = currentUserVideoRef.current.srcObject;
+            const videoTracks = stream.getVideoTracks();
+
+            if(isCameraOn) {
+                // Remove the video track if camera is on
+                if(videoTracks.length > 0) {
+                    videoTracks[0].stop();
+                    stream.removeTrack(videoTracks[0]);
+                    //<FontAwesomeIcon icon="fa-light fa-camera-slash" />
+                }
+            } else {
+                // Add the video track if the camera is off
+                //<FontAwesomeIcon icon="fa-light fa-camera" />
+                navigator.mediaDevices.
+                getUserMedia({video: true})
+                .then((newStream) => {
+                    const newVideoTrack = newstream.getVideoTracks()[0];
+                    stream.addTrack(newVideoTrack);
+                })
+                .catch((err) => {
+                    console.log("You got an error:", err.name, err.message);
+                });
+            }
+
+            setIsCameraOn(!isCameraOn);
         }
-    };
+      
+        // Uncomment these lines if you want to display an image instead of a solid color
+        const image = new Image();
+        image.src = store.profilePic || defaultProfileImage;
+        // image.onload = () => {
+        //   context.drawImage(image, 0, 0, width, height);
+        // };
+    }
 
     return (
         <Box component="form" noValidate onSubmit={handleConnect} sx={{ mt: 1 }}>
 
             <Typography component="h2" variant="h7">
-                Video Camera with options for microphone, camera (settings for video camera using web rtc)
+                Video Call
             </Typography> 
             <Typography component="h2" variant="h7">
-                Peer Id: {peerId}
+                Peer ID: {peerId}
             </Typography> 
             <Typography component="h2" variant="h7">
-                Remote PeerId: {remotePeerId}
+                Remote Peer ID: {remotePeerId}
             </Typography> 
             <TextField
                 margin="normal"
                 fullWidth
                 id="remotePeerId"
-                label="Enter Remote Peer Id"
+                label="Enter Remote Peer ID"
                 name="remotePeerId"
                 autoComplete="remotePeerId"
                 autoFocus
@@ -187,24 +208,11 @@ const PeerCall = () => {
                         alignItems: 'center',
                     }}
                 >
+                <video ref={remoteVideoRef} autoPlay playsInline width="100%" height="100%"/>
+                <video ref={currentUserVideoRef} autoPlay playsInline width="100%" height="100%"/>
 
-                <video ref={currentUserVideoRef} width="50%" height="50%"/>
-                <video ref={remoteVideoRef} width="50%" height="50%"/>
             </Box>
-            <div>
-                <textarea
-                rows="10"
-                cols="50"
-                value={Array.isArray(messages) ? messages.map((message) => `${message.from}: ${message.text}\n`).join('') : ''}
-                readOnly
-                />
-            </div>
-            <input
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                placeholder="Type a message"
-            />
-            <button onClick={handleSendMessage}>Send</button>
+           
        
         </Box>
     );

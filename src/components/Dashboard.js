@@ -114,7 +114,7 @@ const Dashboard = () => {
                             </Typography> 
 
                             <Typography component="h3" variant="p1" class="profileFields">
-                                Email: daiv4018@gmail.com
+                                Email: VD5693@att.com
                             </Typography>
 
                             <Typography component="h3" variant="p1" class="profileFields">

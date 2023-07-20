@@ -3,8 +3,8 @@ import '../App.css';
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlobalStoreContext } from '../store';
-import PeerjsCall from './PeerCall';
-
+import PeerCall from './PeerCall';
+import PeerChat from './PeerChat';
 import Peer from 'peerjs';
 
 import Avatar from '@mui/material/Avatar'
@@ -24,6 +24,9 @@ import EditIcon from '@mui/icons-material/Edit';
 const InCall = () => {
     const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
+
+    // store.createPeer();
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -75,8 +78,8 @@ const InCall = () => {
                     }}
                 >
                     <Grid>
-                    {/* PeerjsCall */}
-                    <PeerjsCall />
+                    {/* PeerCall */}
+                    <PeerCall />
                     </Grid>
                 </Box>
             </Grid>
@@ -90,31 +93,7 @@ const InCall = () => {
                     m: '10px'
                 }}
             >
-                <Box
-                    sx={{
-                        my: 8,
-                        mx: 4,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        
-                    }}
-                >
-                    <Grid>
-                    <Typography component="h3" variant="p1">
-                        Chat (Add attachments) 
-                    </Typography>
-                    <TextField
-                            margin="normal"S
-                            fullWidth
-                            id="chat"
-                            label="Chat..."
-                            name="chat"
-                            autoComplete="current-chat"
-                            autoFocus
-                    />   
-                    </Grid>
-                </Box>
+                <PeerChat/>
                
             </Grid>
             
