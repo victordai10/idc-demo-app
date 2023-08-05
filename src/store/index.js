@@ -9,30 +9,34 @@ export const GlobalStoreContext = createContext({});
 export const initialState = {
     isLoggedIn: false,
     incomingCall: false,
+    callStatus: false,
     username: "",
     password: "",
     phone: "",
+    occupation: "",
     profilePic: null,
     callee: "",
     msg: "",
     peer: null,
-    call: "",
-    peerId: "", 
-    remotePeerId: ""
+    callId: "",  // user's peer id for PeerCall
+    chatId: "",  // user's peer id for PeerChat
+    remotePeerId: "" //remote user's peer id
 }
 
 export const GlobalStoreActionType = {
     SET_IS_LOGGED_IN: "SET_IS_LOGGED_IN",
     SET_INCOMING_CALL: "SET_INCOMING_CALL",
+    SET_CALL_STATUS: "SET_CALL_STATUS",
     SET_USERNAME: "SET_USERNAME",
     SET_PASSWORD: "SET_PASSWORD",
     SET_PHONE: "SET_PHONE",
+    SET_OCCUPATION: "SET_OCCUPATION",
     SET_PROFILE_PIC: "SET_PROFILE_PIC",
     SET_CALLEE: "SET_CALLEE",
     SET_MSG: "SET_MSG",
-    SET_CALL: "SET_CALL",
     CREATE_PEER: "CREATE_PEER",
-    SET_PEER_ID: "SET_PEER_ID",
+    SET_CALL_ID: "SET_CALL_ID",
+    SET_CHAT_ID: "SET_CHAT_ID",
     SET_REMOTE_PEER_ID: "SET_REMOTE_PEER_ID"
 }
 
@@ -55,6 +59,12 @@ function GlobalStoreContextProvider(props) {
                 incomingCall: action.payload.incomingCall
             }
         }
+        case GlobalStoreActionType.SET_CALL_STATUS: {
+            return {
+                ...state,
+                callStatus: action.payload.callStatus
+            }
+        }
         case GlobalStoreActionType.SET_USERNAME: {
             return {
                 ...state,
@@ -71,6 +81,12 @@ function GlobalStoreContextProvider(props) {
             return {
                 ...state,
                 phone: action.payload.phone
+            }
+        }
+        case GlobalStoreActionType.SET_OCCUPATION: {
+            return {
+                ...state,
+                occupation: action.payload.occupation
             }
         }
         case GlobalStoreActionType.SET_PROFILE_PIC: {
@@ -97,10 +113,16 @@ function GlobalStoreContextProvider(props) {
                 peer: action.payload.peer
             }
         }
-        case GlobalStoreActionType.SET_PEER_ID: {
+        case GlobalStoreActionType.SET_CALL_ID: {
             return {
                 ...state,
-                peerId: action.payload.peerId
+                callId: action.payload.callId
+            }
+        }
+        case GlobalStoreActionType.SET_CHAT_ID: {
+            return {
+                ...state,
+                chatId: action.payload.chatId
             }
         }
         case GlobalStoreActionType.SET_REMOTE_PEER_ID: {
@@ -133,6 +155,14 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    store.setCallStatus = () => {
+        const opposite = !store.callStatus;
+        dispatch({
+            type: GlobalStoreActionType.SET_CALL_STATUS,
+            payload: {opposite}
+        })
+    }
+
     store.setUsername = (username) => {
         dispatch({
             type: GlobalStoreActionType.SET_USERNAME,
@@ -153,6 +183,13 @@ function GlobalStoreContextProvider(props) {
             payload: {phone}
         });
        
+    }
+
+    store.setOccupation = (occupation) => {
+        dispatch({
+            type: GlobalStoreActionType.SET_OCCUPATION,
+            payload: {occupation}
+        });
     }
 
     store.setProfilePic = (profilePic) => {
@@ -184,10 +221,17 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
-    store.setPeerId = (peerId) => {
+    store.setCallId = (callId) => {
         dispatch({
-            type: GlobalStoreActionType.SET_PEER_ID,
-            payload: {peerId}
+            type: GlobalStoreActionType.SET_CALL_ID,
+            payload: {callId}
+        });
+    }
+
+    store.setChatId = (chatId) => {
+        dispatch({
+            type: GlobalStoreActionType.SET_CHAT_ID,
+            payload: {chatId}
         });
     }
 

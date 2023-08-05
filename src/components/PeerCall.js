@@ -20,9 +20,10 @@ import EditIcon from '@mui/icons-material/Edit';
 
 const PeerCall = () => {
     const { store } = useContext(GlobalStoreContext);
+    const navigate = useNavigate();
 
-    const [peerId, setPeerId] = useState(store.username);
-    const [remotePeerId, setRemotePeerId] = useState(store.remotePeerId);
+    const [peerId, setPeerId] = useState('');
+    const [remotePeerId, setRemotePeerId] = useState(store.remotePeerId + "-call");
     const currentUserVideoRef = useRef(null);
     const remoteVideoRef = useRef(null); 
     const peerInstance = useRef(null);
@@ -33,7 +34,7 @@ const PeerCall = () => {
     const defaultProfileImage = "https://th.bing.com/th/id/R.67827ff3dd64bbbcb160eefa6ab150a9?rik=j%2flB8VmEWIs9Bg&riu=http%3a%2f%2f3.bp.blogspot.com%2f-qDc5kIFIhb8%2fUoJEpGN9DmI%2fAAAAAAABl1s%2fBfP6FcBY1R8%2fs320%2fBlueHead.jpg&ehk=dMHPxs9WRYvMgQqfGxuhupwv%2fwiQMvsXHHD9ReK4kNs%3d&risl=&pid=ImgRaw&r=0";
 
     useEffect(() => {
-        const peer = new Peer(store.username);
+        const peer = new Peer(store.callId); //store.username + '-call'
 
         peer.on('open', (id) => {
             setPeerId(id);
@@ -52,12 +53,16 @@ const PeerCall = () => {
                 currentUserVideoRef.current.play();
 
                 console.log("Remote Peer ACTUALLY RECEIVED CALL!");
-
-                call.answer(mediaStream); //answer call with A/V Stream
-                call.on('stream', function(remoteStream) {
-                    remoteVideoRef.current.srcObject = remoteStream;
-                    remoteVideoRef.current.play();
-                });
+                
+                // see if condition works
+                if(!store.incomingCall && store.callStatus) {
+                    call.answer(mediaStream); //answer call with A/V Stream
+                    call.on('stream', function(remoteStream) {
+                        remoteVideoRef.current.srcObject = remoteStream;
+                        remoteVideoRef.current.play();
+                    });
+                }
+                
             })
             .catch((err) => {
                 console.error(`you got an error: ${err}`);
@@ -68,7 +73,7 @@ const PeerCall = () => {
         // establish peerInstance for use outside of useEffect
         peerInstance.current = peer;
 
-        // call(store.remotePeerId);
+        call(store.remotePeerId); // once pre-call is submitted -> AUTOMATICALLY TRIGGERS CALL
 
 
         // prevent mem leaks when unmounting
@@ -104,6 +109,7 @@ const PeerCall = () => {
             })
             .catch((err) => {
             console.error(`you got an error: ${err}`);
+            
         });
     }
 
@@ -151,7 +157,7 @@ const PeerCall = () => {
                 navigator.mediaDevices.
                 getUserMedia({video: true})
                 .then((newStream) => {
-                    const newVideoTrack = newstream.getVideoTracks()[0];
+                    const newVideoTrack = newStream.getVideoTracks()[0];
                     stream.addTrack(newVideoTrack);
                 })
                 .catch((err) => {
@@ -176,7 +182,7 @@ const PeerCall = () => {
             <Typography component="h2" variant="h7">
                 Video Call
             </Typography> 
-            <Typography component="h2" variant="h7">
+            {/* <Typography component="h2" variant="h7">
                 Peer ID: {peerId}
             </Typography> 
             <Typography component="h2" variant="h7">
@@ -198,7 +204,7 @@ const PeerCall = () => {
                 sx={{ mt: 3, mb: 2 }}
             >
                 Connect
-            </Button>
+            </Button> */}
             <Box
                     sx={{
                         my: 8,
@@ -206,9 +212,11 @@ const PeerCall = () => {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
+                        backgroundColor: 'black'
                     }}
                 >
                 <video ref={remoteVideoRef} autoPlay playsInline width="100%" height="100%"/>
+                {/* style the video */}
                 <video ref={currentUserVideoRef} autoPlay playsInline width="100%" height="100%"/>
 
             </Box>

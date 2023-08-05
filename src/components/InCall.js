@@ -25,24 +25,8 @@ const InCall = () => {
     const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
 
-    // store.createPeer();
-
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        // store.setRemotePeerId(formData.get("remotePeerId"));
-        // setRemotePeerId(formData.get("remotePeerId"));
-        // console.log("Remote Peer Id: ",  remotePeerId);
-        // call(remotePeerId);
-        //stuff to expect:
-        // ... lots of things to trigger: Calling with signaling (peerjs)
-        // Sending the profile and brief message and setting up how 
-        // that looks to the callee
-    }
 
     return(
-       
         <div>
         <Grid 
             container 
@@ -78,8 +62,7 @@ const InCall = () => {
                     }}
                 >
                     <Grid>
-                    {/* PeerCall */}
-                    <PeerCall />
+                        <PeerCall />
                     </Grid>
                 </Box>
             </Grid>
@@ -94,9 +77,7 @@ const InCall = () => {
                 }}
             >
                 <PeerChat/>
-               
             </Grid>
-            
         </Grid>
         </div>
     );

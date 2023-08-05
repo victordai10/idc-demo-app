@@ -134,6 +134,18 @@ const Profile = () => {
                             onChange={(event) => store.setPhone(event.target.value)}
                             value={store.phone}
                         />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="occupation"
+                            label="Occupation"
+                            type="occupation"
+                            id="occupation"
+                            autoComplete="occupation"
+                            onChange={(event) => store.setOccupation(event.target.value)}
+                            value={store.occupation}
+                        />
                         
                         <Button
                             type="submit"

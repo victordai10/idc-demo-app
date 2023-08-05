@@ -48,6 +48,12 @@ const PreCall = () => {
 
         // triggers call using peerjs and web rtc!
         store.setRemotePeerId(callee);
+        const callId = store.username + '-call';
+        const chatId = store.username + '-chat';
+        store.setCallId(callId); // set's your own callId
+        store.setChatId(chatId); // set's your own chatId
+        store.setIncomingCall();
+        
         navigate("/InCall");
     }
     

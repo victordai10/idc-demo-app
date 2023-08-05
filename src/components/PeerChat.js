@@ -20,8 +20,8 @@ const PeerChat = () => {
     const peerInstance = useRef(null);
 
     const [peer, setPeer] = useState(null);
-    const [peerId, setPeerId] = useState(store.username);
-    const [remotePeerId, setRemotePeerId] = useState('');
+    const [peerId, setPeerId] = useState('');
+    const [remotePeerId, setRemotePeerId] = useState(store.remotePeerId + "-chat");
 
     const [connection, setConnection] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -29,7 +29,7 @@ const PeerChat = () => {
 
     useEffect(() => {
         const initializePeer = async () => {
-            const peerInstance = new Peer(store.username);
+            const peerInstance = new Peer(store.chatId);
 
             peerInstance.on('open', () => {
                 console.log('Connected with ID: ', peerInstance.id);
@@ -39,7 +39,7 @@ const PeerChat = () => {
             peerInstance.on('connection', (conn) => {
                 // Handle incoming connections
                 conn.on('data', (data) => {
-                    setMessages((prevMessages) => [...prevMessages, {from: 'remote', text: data}]);
+                    setMessages((prevMessages) => [...prevMessages, {from: store.remotePeerId, text: data}]);
                 });
             });
 
@@ -48,24 +48,8 @@ const PeerChat = () => {
 
         initializePeer();
 
-        // const peer = new Peer(store.username);
 
-        // peer.on('open', (id) => {
-        //     setPeerId(id);
-        // });
-
-
-        // peer.on('connection', (conn) => {
-        //     // Handle incoming connections
-        //     setConnection(conn);
-        //     // remote peer receives new messages
-        //     conn.on('data', (data) => {
-        //         setMessages((prevMessages) => [...prevMessages, { from: 'remote', text: data }]);
-        //     });
-        // });
-
-        // // establish peerInstance for use outside of useEffect
-        // peerInstance.current = peer;
+        handleConnect();
 
         // prevent mem leaks when unmounting
         return () => {
@@ -76,25 +60,25 @@ const PeerChat = () => {
     }, []); // end of useEffect (constantly listening for calls)
 
 
-    const handleConnect = (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const remoteId = formData.get("remotePeerChatId");
-        setRemotePeerId(remoteId);
+    const handleConnect = () => {
+        //event.preventDefault();
+        // const formData = new FormData(event.currentTarget);
+        // const remoteId = formData.get("remotePeerChatId");
+        // setRemotePeerId(remoteId);
         // store.setRemotePeerId(remoteId);
         
 
         if(peer) {
-            const conn = peer.connect(remoteId);
+            const conn = peer.connect(remotePeerId); // instead of remote id
             setConnection(conn);
 
             conn.on('open', () => {
-                console.log('Connected to remote peer ID: ', remoteId);
+                console.log('Connected to remote peer ID: ', remotePeerId); // instead of remoteId
                 setConnection(conn);
             });
 
             conn.on('data', (data) => {
-                setMessages((prevMessages) => [...prevMessages, { from: 'remote', text: data }]);
+                setMessages((prevMessages) => [...prevMessages, { from: store.remotePeerId, text: data }]);
             });
 
         
@@ -105,14 +89,15 @@ const PeerChat = () => {
     const handleSendMessage = () => {
         if(connection) {
           connection.send(inputMessage);
-          setMessages((prevMessages) => [...prevMessages, { from: 'local', text: inputMessage }]);
+          setMessages((prevMessages) => [...prevMessages, { from: store.username, text: inputMessage }]);
           setInputMessage('');
         }
     };
 
     return (
         <Box
-            component="form" noValidate onSubmit={handleConnect}
+            //component="form" noValidate onSubmit={handleConnect}
+
             sx={{
                 my: 8,
                 mx: 4,
@@ -125,7 +110,7 @@ const PeerChat = () => {
             <Typography component="h3" variant="p1">
                 Chat (Add attachments) 
             </Typography>
-            <Typography component="h2" variant="h7">
+            {/* <Typography component="h2" variant="h7">
                 Peer Id: {peerId}
             </Typography> 
             <Typography component="h2" variant="h7">
@@ -147,17 +132,17 @@ const PeerChat = () => {
                 sx={{ mt: 3, mb: 2 }}
             >
                 Connect
-            </Button>
-             <div>
+            </Button> */}
+             <Typography>
                 <ul sx={{backgroundColor: 'gray', listStyleType: 'none'}}>
                     {messages.map((message, index) => {
-                        if(message.from === "local") {
+                        // if(message.from === "local") {
                             
-                        } 
+                        // } 
                         return (<li key={index}>{message.from}: {message.text}</li>);
                     })}
                 </ul>
-            </div>
+            </Typography>
             <input
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}

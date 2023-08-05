@@ -122,7 +122,7 @@ const Dashboard = () => {
                             </Typography>
 
                             <Typography component="h3" variant="p1" class="profileFields">
-                                Occupation: TDP Intern
+                                Occupation: {store.occupation}
                             </Typography>
 
                         </div>
