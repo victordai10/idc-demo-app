@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-// import Peer from "peerjs";
+import Peer from 'peerjs';
 import { useNavigate } from 'react-router-dom';
 import { GlobalStoreContext } from '../store'
 
@@ -20,6 +20,55 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const PreCall = () => {
     const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
+    // const [peer, setPeer] = useState(null);
+    // const [dataConnection, setDataConnection] = useState(null);
+    // const [showIncomingCall, setShowIncomingCall] = useState(false);
+
+    // useEffect(() => {      
+
+
+    //     const initializePeer = async () => {
+    //         const peerInstance = new Peer(store.username); //store.chatId
+
+    //         peerInstance.on('open', () => {
+    //             console.log('Connected with username: ', peerInstance.id);
+    //         });
+
+    //         peerInstance.on('connection', (conn) => {
+    //             // Handle incoming connections
+    //             conn.on('data', (data) => {
+    //               if (data.type === 'incoming_call') {
+    //                 // Handle the incoming call message
+    //                 setShowIncomingCall(true); // Show your custom component
+      
+    //                 // Show a prompt or modal to inform the user about the incoming call and message
+    //                 const acceptCall = window.confirm(`Incoming call from ${store.callee}: ${data.message}\nDo you want to accept the call?`);
+    //                 if (acceptCall) {
+    //                   // The callee accepts the call
+    //                   // Navigate to the "/InCall" route or perform any other desired action
+    //                   navigate("/InCall");
+    //                 }
+    //               }
+    //             });
+                
+    //         });
+      
+    //         setPeer(peerInstance);  
+    //     };
+
+    //     initializePeer();
+      
+    //     // Clean up the peer instance when the component is unmounted
+    //     return () => {
+    //         if (peer) {
+    //         peer.destroy();
+    //         }
+    //     };
+      
+    //     // ... (other existing code in useEffect)
+    //   }, []);
+
+
 
 
     const handleBackArrow = (event) => {
@@ -47,13 +96,24 @@ const PreCall = () => {
         console.log("PreCall-> msg = ", msg);
 
         // triggers call using peerjs and web rtc!
-        store.setRemotePeerId(callee);
+        store.setRemotePeerId(callee); // set remote peer id to the callee entered in pre-call
         const callId = store.username + '-call';
         const chatId = store.username + '-chat';
         store.setCallId(callId); // set's your own callId
         store.setChatId(chatId); // set's your own chatId
         store.setIncomingCall();
         
+        // Establish a data connection
+        // if (peer) {
+        //     const conn = peer.connect(callee);
+        //     setDataConnection(conn);
+
+        //     conn.on('open', () => {
+        //     // Send the incoming call message
+        //     conn.send({ type: 'incoming_call', message: msg });
+        //     });
+        // }
+
         navigate("/InCall");
     }
     

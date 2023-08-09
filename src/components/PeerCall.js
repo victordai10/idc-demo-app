@@ -22,27 +22,27 @@ const PeerCall = () => {
     const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
 
-    const [peerId, setPeerId] = useState('');
-    const [remotePeerId, setRemotePeerId] = useState(store.remotePeerId + "-call");
+    const [peerId, setPeerId] = useState(store.callId);
+    const rpid = store.remotePeerId + "-call";
+    const [remotePeerId, setRemotePeerId] = useState(rpid);
     const currentUserVideoRef = useRef(null);
     const remoteVideoRef = useRef(null); 
     const peerInstance = useRef(null);
 
-    const [isCameraOn, setIsCameraOn] = useState(true);
     // const peer = store.peer;
 
     const defaultProfileImage = "https://th.bing.com/th/id/R.67827ff3dd64bbbcb160eefa6ab150a9?rik=j%2flB8VmEWIs9Bg&riu=http%3a%2f%2f3.bp.blogspot.com%2f-qDc5kIFIhb8%2fUoJEpGN9DmI%2fAAAAAAABl1s%2fBfP6FcBY1R8%2fs320%2fBlueHead.jpg&ehk=dMHPxs9WRYvMgQqfGxuhupwv%2fwiQMvsXHHD9ReK4kNs%3d&risl=&pid=ImgRaw&r=0";
 
     useEffect(() => {
-        const peer = new Peer(store.callId); //store.username + '-call'
+        const peer = new Peer(peerId); //store.username + '-call' aka store.callId
 
         peer.on('open', (id) => {
+            console.log('PeerCall: Call ID: ', peer.id);
             setPeerId(id);
         });
 
         // remote peer receives call here
         peer.on('call', (call) => {
-            // var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
             console.log("Remote Peer has received the call");
             // error comes here!!!
@@ -89,6 +89,7 @@ const PeerCall = () => {
     //HANDLE/CALLBACK FUNCTIONS
 
 
+    
     // us calling the remote peer
     const call = (remotePeerId) => {
         console.log("HI");
@@ -108,8 +109,7 @@ const PeerCall = () => {
                 });     
             })
             .catch((err) => {
-            console.error(`you got an error: ${err}`);
-            
+            console.error(`Failed to get remoteStream. you got an error: ${err}`);
         });
     }
 
@@ -129,7 +129,7 @@ const PeerCall = () => {
         
         //doesn't actually get remotePeerId (or not quick enough due to not being in useEffect)
 
-        console.log("Remote Peer Id: ",  remotePeerId);
+        console.log("Remote Peer Call Id: ",  remotePeerId);
         if(peerInstance) {
             
             // Video Call 
@@ -139,56 +139,27 @@ const PeerCall = () => {
     }
 
 
-    function toggleCamera() {
-        if(currentUserVideoRef.current && currentUserVideoRef.current.srcObject) {
-            const stream = currentUserVideoRef.current.srcObject;
-            const videoTracks = stream.getVideoTracks();
-
-            if(isCameraOn) {
-                // Remove the video track if camera is on
-                if(videoTracks.length > 0) {
-                    videoTracks[0].stop();
-                    stream.removeTrack(videoTracks[0]);
-                    //<FontAwesomeIcon icon="fa-light fa-camera-slash" />
-                }
-            } else {
-                // Add the video track if the camera is off
-                //<FontAwesomeIcon icon="fa-light fa-camera" />
-                navigator.mediaDevices.
-                getUserMedia({video: true})
-                .then((newStream) => {
-                    const newVideoTrack = newStream.getVideoTracks()[0];
-                    stream.addTrack(newVideoTrack);
-                })
-                .catch((err) => {
-                    console.log("You got an error:", err.name, err.message);
-                });
-            }
-
-            setIsCameraOn(!isCameraOn);
-        }
-      
-        // Uncomment these lines if you want to display an image instead of a solid color
-        const image = new Image();
-        image.src = store.profilePic || defaultProfileImage;
-        // image.onload = () => {
-        //   context.drawImage(image, 0, 0, width, height);
-        // };
-    }
-
     return (
-        <Box component="form" noValidate onSubmit={handleConnect} sx={{ mt: 1 }}>
+        <Box 
+        component="form" noValidate onSubmit={handleConnect} 
+        sx={{ 
+            mt: 1, 
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',        
+        }} 
+        >
 
             <Typography component="h2" variant="h7">
                 Video Call
             </Typography> 
-            {/* <Typography component="h2" variant="h7">
-                Peer ID: {peerId}
+            <Typography >
+                pid: {peerId}
             </Typography> 
-            <Typography component="h2" variant="h7">
-                Remote Peer ID: {remotePeerId}
+            <Typography >
+                rpid: {remotePeerId}
             </Typography> 
-            <TextField
+            {/* <TextField
                 margin="normal"
                 fullWidth
                 id="remotePeerId"

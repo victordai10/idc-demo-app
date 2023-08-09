@@ -19,7 +19,10 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import EditIcon from '@mui/icons-material/Edit';
-
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const InCall = () => {
     const { store } = useContext(GlobalStoreContext);
@@ -76,7 +79,21 @@ const InCall = () => {
                     m: '10px'
                 }}
             >
-                <PeerChat/>
+                <Accordion>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="chat-content"
+                        id="chat-header"
+                    >
+                     <Typography component="h3" variant="p1">
+                        Chat 
+                    </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <PeerChat/>
+                    </AccordionDetails>
+                </Accordion>
+                
             </Grid>
         </Grid>
         </div>

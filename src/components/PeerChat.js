@@ -14,14 +14,22 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import EditIcon from '@mui/icons-material/Edit';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 
 const PeerChat = () => {
     const { store } = useContext(GlobalStoreContext);
-    const peerInstance = useRef(null);
+    // const peerInstance = useRef(null);
 
     const [peer, setPeer] = useState(null);
-    const [peerId, setPeerId] = useState('');
-    const [remotePeerId, setRemotePeerId] = useState(store.remotePeerId + "-chat");
+    const [peerId, setPeerId] = useState(store.username);
+    
+
+    const rpid = store.remotePeerId;
+    const [remotePeerId, setRemotePeerId] = useState(rpid);
 
     const [connection, setConnection] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -29,17 +37,18 @@ const PeerChat = () => {
 
     useEffect(() => {
         const initializePeer = async () => {
-            const peerInstance = new Peer(store.chatId);
+            const peerInstance = new Peer(peerId); //store.chatId
 
             peerInstance.on('open', () => {
-                console.log('Connected with ID: ', peerInstance.id);
+                console.log('Connected with Chat ID: ', peerInstance.id);
                 setPeerId(peerInstance.id);
             });
 
             peerInstance.on('connection', (conn) => {
                 // Handle incoming connections
+                console.log('UseEffect: setMessages in peerchat');
                 conn.on('data', (data) => {
-                    setMessages((prevMessages) => [...prevMessages, {from: store.remotePeerId, text: data}]);
+                    setMessages((prevMessages) => [...prevMessages, {from: store.remotePeerId || 'remote', text: data}]);
                 });
             });
 
@@ -48,9 +57,8 @@ const PeerChat = () => {
 
         initializePeer();
 
-
-        handleConnect();
-
+        
+        
         // prevent mem leaks when unmounting
         return () => {
             if(peer) {
@@ -60,44 +68,64 @@ const PeerChat = () => {
     }, []); // end of useEffect (constantly listening for calls)
 
 
-    const handleConnect = () => {
-        //event.preventDefault();
-        // const formData = new FormData(event.currentTarget);
-        // const remoteId = formData.get("remotePeerChatId");
-        // setRemotePeerId(remoteId);
-        // store.setRemotePeerId(remoteId);
+    // useEffect(() => {
+    //     if(connection) {
+    //         connection.on('open', () => {
+    //             console.log('Connected to remote peer ID: ', remotePeerId); // instead of remoteId
+    //         });
+
+    //         connection.on('data', (data) => {
+    //             console.log('sends messages within handleconnect');
+    //             setMessages((prevMessages) => [...prevMessages, { from: store.remotePeerId, text: data }]);
+    //         });
+
+    //     }
         
+    // }, [connection]);
+
+
+    const handleConnect = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const remoteId = formData.get("remotePeerChatId");
+        store.setRemotePeerId(remoteId);
+        setRemotePeerId(remoteId);
+
+
+        console.log('remotePeerId = ', remotePeerId);
+        console.log('remoteId = ', remoteId);
+        console.log('store.remotePeerId = ', store.remotePeerId);
 
         if(peer) {
+            console.log("checking remotePeerId again: ", remotePeerId);
             const conn = peer.connect(remotePeerId); // instead of remote id
             setConnection(conn);
 
-            conn.on('open', () => {
-                console.log('Connected to remote peer ID: ', remotePeerId); // instead of remoteId
-                setConnection(conn);
-            });
+            // conn.on('open', () => {
+            //     console.log('Connected to remote peer ID: ', remotePeerId); // instead of remoteId
+            //     setConnection(conn);
+            // });
 
             conn.on('data', (data) => {
+                console.log('sends messages within handleconnect');
                 setMessages((prevMessages) => [...prevMessages, { from: store.remotePeerId, text: data }]);
             });
-
-        
         }
-          
     }
+
 
     const handleSendMessage = () => {
         if(connection) {
+          console.log('send messages from submission of button');
           connection.send(inputMessage);
-          setMessages((prevMessages) => [...prevMessages, { from: store.username, text: inputMessage }]);
+          setMessages((prevMessages) => [...prevMessages, { from: store.username || 'local', text: inputMessage }]);
           setInputMessage('');
         }
     };
 
     return (
         <Box
-            //component="form" noValidate onSubmit={handleConnect}
-
+            component="form" noValidate onSubmit={handleConnect}
             sx={{
                 my: 8,
                 mx: 4,
@@ -106,15 +134,11 @@ const PeerChat = () => {
                 alignItems: 'center',        
             }}
         >
-                   
-            <Typography component="h3" variant="p1">
-                Chat (Add attachments) 
-            </Typography>
-            {/* <Typography component="h2" variant="h7">
-                Peer Id: {peerId}
+            <Typography >
+                User ID: {peerId}
             </Typography> 
-            <Typography component="h2" variant="h7">
-                Remote PeerId: {remotePeerId}
+            <Typography>
+                Callee ID: {remotePeerId}
             </Typography> 
             <TextField
                 margin="normal"
@@ -132,23 +156,71 @@ const PeerChat = () => {
                 sx={{ mt: 3, mb: 2 }}
             >
                 Connect
-            </Button> */}
-             <Typography>
-                <ul sx={{backgroundColor: 'gray', listStyleType: 'none'}}>
-                    {messages.map((message, index) => {
-                        // if(message.from === "local") {
-                            
-                        // } 
-                        return (<li key={index}>{message.from}: {message.text}</li>);
-                    })}
-                </ul>
-            </Typography>
-            <input
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                placeholder="Type a message"
-            />
-            <button onClick={handleSendMessage}>Send</button>
+            </Button>
+            
+            {/* <ul sx={{backgroundColor: 'gray', listStyleType: 'none', padding: 0, margin: 0 }}>
+                {messages.map((message, index) => {
+                    if(message.from === "local") {
+                        
+                    } 
+                    return (<li key={index}>{message.from}: {message.text}</li>);
+                })}
+            </ul> */}
+
+            <Box sx={{ 
+                backgroundColor: '#FAF8F6', 
+                width: '100%', 
+                
+                padding: 8, 
+                borderRadius: 2, 
+                maxHeight: '300px', // Set a fixed height for the chat container
+                overflowY: 'auto', // Add a vertical scrollbar when the content exceeds the container height 
+            }}>
+            {messages.map((message, index) => {
+                const isLocal = message.from === 'local' || store.username;
+                return (
+                <Grid container key={index} sx={{ marginBottom: 1 }}>
+                    <Grid item xs={isLocal ? 0 : 6} />
+                    <Grid item xs={6}>
+                    <Box
+                        sx={{
+                            padding: 1,
+                            borderRadius: 2.5,
+                            backgroundColor: isLocal ? 'lightblue' : 'lightgreen',
+                            wordWrap: 'break-word',
+                            whiteSpace: 'normal',
+                            overflowWrap: 'break-word',
+                        }}
+                    >
+                        {message.from}: {message.text}
+                    </Box>
+                    </Grid>
+                    <Grid item xs={isLocal ? 6 : 0} />
+                </Grid>
+                );
+            })}
+            </Box>
+            
+            <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+                <Grid container>
+                    <Grid item xs={10}>
+                    <TextField
+                        fullWidth
+                        value={inputMessage}
+                        onChange={(e) => setInputMessage(e.target.value)}
+                        placeholder="Type a message"
+                        variant="outlined"
+                        size="small"
+                    />
+                    </Grid>
+                    <Grid item xs={2}>
+                    <Button variant="contained" onClick={handleSendMessage}>
+                        Send
+                    </Button>
+                    </Grid>
+                </Grid>
+            </Box>
+            
         </Box>
     );
 
