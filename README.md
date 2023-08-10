@@ -209,3 +209,7 @@
 * The Incoming Call Message that the remote user should receive if a current user calls is not functional 
 * The largest issue with this is how to approach setting up the data connection in the Pre-Call page that is separate from most of the connections in the In-Call page. 
 * The goal will be to have a modal of the Incoming Call Message show up with both the current user's profile page and the brief message stating the purpose of the call that the current user entered in their Pre-Call setup. The IncomingCallModal.js file is the UI for the modal 
+
+#### UI From IncomingCallModal.js
+
+![Screenshot 2023-08-01 170901](https://github.com/victordai10/idc-demo-app/assets/69231171/2f852317-72e1-4f8d-aabc-6f18140714fe)
