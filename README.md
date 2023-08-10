@@ -183,6 +183,16 @@
 
 * Enter ```npm start``` in the terminal at the root of your directory to run the web application on localhost:3000
 
+1. Login Screen
+    * The Login Screen is built for demo and UI purposes and does not actually keep track of accounts 
+2. Dashboard/Profile
+    * The Dashboard allows users to customize their profiles and set up calls
+3. Pre-Call
+    * The Pre-Call screen prepares calls by setting up the callee's ID and a brief message that will be sent along with the user's profile to the callee
+4. In-Call
+    * The In-Call screen is what users will interact with during the call. They will be able to video call, chat, share files, and eventually more when the app is fully implemented
+    * Features that can be implemented in the future include: Contacts List for Pre-Calling, Fully functional Video Calls with muting, camera toggling, and screen-sharing, app-sharing, and subscription-based profile enhancements
+
 #### 3. In-Call Features and Current Issues
 
 #### Video Calling (In-Progress)
