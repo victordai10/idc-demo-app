@@ -200,8 +200,9 @@
 
     2. <i>Enter each user's remote peer ID into the TextField and click the Connect button</i>. So basically take the other browser's Peer ID and enter that into the current browser's text field
     3. <i> Make sure the connection works on both sides by entering messages and sending them. If it works correctly, you should see both the user's message from "local" and the same message on the remote peer's browser from "remote" </i>
+    
+![ChatDemo](https://github.com/victordai10/idc-demo-app/assets/69231171/cd9adfd8-5cb9-4c91-a63f-581fe3cac7d0)
 
- ! [Alt text] (name-of-gif-file.gif) / ! []
 
 #### Incoming Call Handling
 
