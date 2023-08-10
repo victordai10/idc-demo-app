@@ -23,6 +23,7 @@ function App() {
               <Route path="/Dashboard" element={<Dashboard/>}/>
               <Route path="/Dashboard/Profile" element={<Profile/>}/>
               <Route path="/PreCall" element={<PreCall/>}/>
+              
               <Route path="/InCall" element={<InCall/>}/>
             </Routes>
           </Router>

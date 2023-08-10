@@ -158,15 +158,6 @@ const PeerChat = () => {
                 Connect
             </Button>
             
-            {/* <ul sx={{backgroundColor: 'gray', listStyleType: 'none', padding: 0, margin: 0 }}>
-                {messages.map((message, index) => {
-                    if(message.from === "local") {
-                        
-                    } 
-                    return (<li key={index}>{message.from}: {message.text}</li>);
-                })}
-            </ul> */}
-
             <Box sx={{ 
                 backgroundColor: '#FAF8F6', 
                 width: '100%', 
