@@ -184,11 +184,20 @@
 * Enter ```npm start``` in the terminal at the root of your directory to run the web application on localhost:3000
 
 1. Login Screen
-    * The Login Screen is built for demo and UI purposes and does not actually keep track of accounts 
+    * The Login Screen is built for demo and UI purposes and does not actually keep track of accounts
+      ![Screenshot_20230731-172900_idc-demo-app (1)](https://github.com/victordai10/idc-demo-app/assets/69231171/6e9aaf56-3b5b-4ca1-b1e4-5d8ee632b429)
+
 2. Dashboard/Profile
     * The Dashboard allows users to customize their profiles and set up calls
+###### Dashboard
+![Screenshot_20230731-173115_idc-demo-app (1)](https://github.com/victordai10/idc-demo-app/assets/69231171/7fb01d34-8c60-4a94-b693-9c5f73d65384)
+###### Profile
+![Screenshot_20230731-173051_idc-demo-app (1)](https://github.com/victordai10/idc-demo-app/assets/69231171/106fdaa7-0439-4ba4-8373-e4597a3b1a6e)
+
 3. Pre-Call
     * The Pre-Call screen prepares calls by setting up the callee's ID and a brief message that will be sent along with the user's profile to the callee
+      ![Screenshot_20230731-173246_idc-demo-app (1)](https://github.com/victordai10/idc-demo-app/assets/69231171/73c38c65-1391-41db-b1c2-7ab4cdfa9ad9)
+
 4. In-Call
     * The In-Call screen is what users will interact with during the call. They will be able to video call, chat, share files, and eventually more when the app is fully implemented
     * Features that can be implemented in the future include: Contacts List for Pre-Calling, Fully functional Video Calls with muting, camera toggling, and screen-sharing, app-sharing, and subscription-based profile enhancements
